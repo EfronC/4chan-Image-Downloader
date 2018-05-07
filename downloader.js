@@ -20,38 +20,27 @@ function confirmDownload(count) {
 	return confirm(msg);
 }
 
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
 /**
  * downloadImages(confirmed) will perform the download of the entire thread.
  * @param  {Boolean} confirmed - whether or not to treat this call as pre-
  *   confirmed and bypass the user's confirmation
  */
 function downloadImages(confirmed=false) {
-  let images = document.getElementsByClassName("fileThumb");
+  let images = document.getElementsByClassName("icon-download-alt");
 	if(confirmed || confirmDownload(images.length)) {
 		for(let i=0; i<images.length; i++) {
-			if(images[i].href) {
-				// clone the image without 4chan X's event listeners
-				let oldImg = images[i];
-				let newImg = oldImg.cloneNode(true);
-				oldImg.parentNode.replaceChild(newImg, oldImg);
-
-				// set up and trigger the download of the image
-				let name = newImg.href.split('/').slice(-1)[0];
-				let link = newImg.href + '?4chan-image-downloader';
-				newImg.href = link;
-				newImg.setAttribute("download", name);
-				newImg.click();
-				newImg.removeAttribute("download");
-				newImg.click();
-
-				// put 4chan X's image back so the user can click on it again
-				newImg.parentNode.replaceChild(oldImg, newImg);
-			}
+			// Download image
+			images[i].click();
+			sleep(1000);
 		}
 	}
-}
-
-// if we're running on a new tab that we opened, try to close it every second
-if(document.location.search.indexOf('4chan-image-downloader') > -1) {
-	self.setInterval(function(){close()}, 1000);
 }
