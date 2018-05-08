@@ -8,6 +8,9 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
+  "browser_action": {
+    "default_icon": "images/icon16.png"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -20,7 +23,11 @@
       "js": ["init.js"]
     }
   ],
-  "web_accessible_resources": [
-    "downloader.js"
+  "background": {
+    "scripts": ["downloader.js"]
+  },
+  "permissions": [
+    "downloads",
+    "activeTab"
   ]
 }

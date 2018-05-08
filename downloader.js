@@ -29,18 +29,52 @@ function sleep(milliseconds) {
   }
 }
 
+function onStartedDownload(id) {
+  console.log('Started downloading: ${id}');
+}
+
+function onFailed(error) {
+  console.log('Download failed: ${error}');
+}
+
+var urlRegex = /^https?:\/\/(?:[^./?#]+\.)?stackoverflow\.com/;
+
+var pest;
+
 /**
  * downloadImages(confirmed) will perform the download of the entire thread.
  * @param  {Boolean} confirmed - whether or not to treat this call as pre-
  *   confirmed and bypass the user's confirmation
  */
-function downloadImages(confirmed=false) {
-  let images = document.getElementsByClassName("icon-download-alt");
+function downloadImages(images) {
+	var confirmed=false;
+  	var name = pest.split("/")
+  	name = name[name.indexOf("thread") + 1]
 	if(confirmed || confirmDownload(images.length)) {
 		for(let i=0; i<images.length; i++) {
 			// Download image
-			images[i].click();
+			var downloadUrl = images[i];
+			img = downloadUrl.split("/")
+			img = img[img.length - 1]
+			var downloading = chrome.downloads.download({
+				url: downloadUrl,
+				filename: name+"/"+img,
+				conflictAction: 'uniquify'
+			});
+			//images[i].click();
 			sleep(1000);
+
 		}
+		alert("Done!");
 	}
 }
+
+chrome.browserAction.onClicked.addListener(function(tab) { 
+	// ...check the URL of the active tab against our pattern and...
+    //if (urlRegex.test(tab.url)) {
+        // ...if it matches, send a message specifying a callback too
+        console.log(tab.url);
+        pest = tab.url;
+        chrome.tabs.sendMessage(tab.id, {text: 'report_back'}, downloadImages);
+    //}
+});
