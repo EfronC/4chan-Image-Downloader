@@ -19,7 +19,9 @@
         "http://desuarchive.org/*/thread/*",
         "https://desuarchive.org/*/thread/*",
         "http://archived.moe/*/thread/*",
-        "https://archived.moe/*/thread/*"],
+        "https://archived.moe/*/thread/*",
+        "http://archive.nyafuu.org/*/thread/*",
+        "https://archive.nyafuu.org/*/thread/*"],
       "js": ["init.js"]
     }
   ],

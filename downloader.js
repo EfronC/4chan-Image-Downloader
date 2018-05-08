@@ -29,16 +29,7 @@ function sleep(milliseconds) {
   }
 }
 
-function onStartedDownload(id) {
-  console.log('Started downloading: ${id}');
-}
-
-function onFailed(error) {
-  console.log('Download failed: ${error}');
-}
-
-var urlRegex = /^https?:\/\/(?:[^./?#]+\.)?stackoverflow\.com/;
-
+//var urlRegex = /^https?:\/\/((?:[^./?#]+\.)?fireden\.net|desuarchive\.org|archived\.moe|nyafuu\.org)\/\w{1,3}\/thread\/\w*/;
 var pest;
 
 /**
@@ -46,16 +37,20 @@ var pest;
  * @param  {Boolean} confirmed - whether or not to treat this call as pre-
  *   confirmed and bypass the user's confirmation
  */
-function downloadImages(images) {
+function downloadImages(response) {
 	var confirmed=false;
-  	var name = pest.split("/")
-  	name = name[name.indexOf("thread") + 1]
+	if (response["name"]) {
+		var name = response["name"];
+	} else {
+		var name = pest.split("/")
+  		name = name[name.indexOf("thread") + 1]
+	}
+	let images = response["images"];
 	if(confirmed || confirmDownload(images.length)) {
 		for(let i=0; i<images.length; i++) {
 			// Download image
-			var downloadUrl = images[i];
-			img = downloadUrl.split("/")
-			img = img[img.length - 1]
+			var downloadUrl = images[i].split(" ")[0];
+			img = images[i].split(" ")[1];
 			var downloading = chrome.downloads.download({
 				url: downloadUrl,
 				filename: name+"/"+img,

@@ -1,11 +1,12 @@
 
 # Archive-Image-Downloader
-Click a link to download every image in a Archive thread.
+Click a link to download every image in an Archive thread.
 
 Supported Archives:
 - Fireden
 - Desuarchive
 - Archived.moe
+- Nyafuu
 
 
 NOTE: If you have the "Ask where to save each file before downloading" option 
