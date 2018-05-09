@@ -21,7 +21,9 @@
         "http://archived.moe/*/thread/*",
         "https://archived.moe/*/thread/*",
         "http://archive.nyafuu.org/*/thread/*",
-        "https://archive.nyafuu.org/*/thread/*"],
+        "https://archive.nyafuu.org/*/thread/*",
+        "http://thebarchive.com/*/thread/*",
+        "https://thebarchive.com/*/thread/*"],
       "js": ["init.js"]
     }
   ],
