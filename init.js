@@ -26,9 +26,9 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         let images = []
         for(let i=0; i<imagenes.length; i++) {
             if (imagenes[i].hasAttribute("title")) {
-                images.push(imagenes[i].href + " " + imagenes[i].title.replace(/ /g, "_"));
+                images.push(imagenes[i].href + " . " + imagenes[i].title);
             } else {
-                images.push(imagenes[i].href + " " + imagenes[i].innerText.replace(/ /g, "_"));
+                images.push(imagenes[i].href + " . " + imagenes[i].innerText);
             }
         }
         response["images"] = images;

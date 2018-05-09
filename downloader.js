@@ -31,6 +31,8 @@ function sleep(milliseconds) {
 
 //var urlRegex = /^https?:\/\/((?:[^./?#]+\.)?fireden\.net|desuarchive\.org|archived\.moe|nyafuu\.org)\/\w{1,3}\/thread\/\w*/;
 var pest;
+var tries = 0;
+var toResume = [];
 
 /**
  * downloadImages(confirmed) will perform the download of the entire thread.
@@ -49,20 +51,55 @@ function downloadImages(response) {
 	if(confirmed || confirmDownload(images.length)) {
 		for(let i=0; i<images.length; i++) {
 			// Download image
-			var downloadUrl = images[i].split(" ")[0];
-			img = images[i].split(" ")[1];
+			var downloadUrl = images[i].split(" . ")[0];
+			img = images[i].split(" . ")[1];
 			var downloading = chrome.downloads.download({
 				url: downloadUrl,
 				filename: name+"/"+img,
 				conflictAction: 'uniquify'
 			});
 			//images[i].click();
-			sleep(1000);
 
 		}
-		alert("Done!");
 	}
 }
+
+function resumeDownloads(data) {
+	toResume = [];
+	for(let j=0; j<data.length;j++) {
+		chrome.downloads.resume(data[j]);
+	}
+}
+
+function handleChanged(delta) {
+	if (delta.state && delta.state.current === "complete") {
+    	console.log(`Download ${delta.id} has completed.`);
+  	}
+
+  	if (delta.error) {
+  		console.log(`Download ${delta.id} had an error.`);
+  		console.log(delta);
+  		toResume.push(delta.id);
+  	}
+
+  	chrome.downloads.search({state: "in_progress"}, function(data){
+		if (data.length == 0) {
+			if (toResume.length > 0 && tries < 5) {
+				sleep(5000);
+				tries++;
+				resumeDownloads(toResume);
+			} else {
+				if (toResume.length > 0) {
+					alert("Some downloads could not be completed");
+				} else {
+					console.log("Downloads ended");
+				}
+			}
+		}
+	});
+}
+
+chrome.downloads.onChanged.addListener(handleChanged)
 
 chrome.browserAction.onClicked.addListener(function(tab) { 
 	// ...check the URL of the active tab against our pattern and...
