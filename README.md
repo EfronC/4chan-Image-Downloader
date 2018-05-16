@@ -7,6 +7,10 @@ Supported Archives:
 - Desuarchive
 - Archived.moe
 - Nyafuu
+- thebarchive
+- yuki.la
+- 4archive
+- 4chan
 
 
 NOTE: If you have the "Ask where to save each file before downloading" option 
