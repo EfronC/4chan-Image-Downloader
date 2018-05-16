@@ -12,20 +12,21 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     if (msg.text === 'report_back') {
         // Call the specified callback, passing
         // the web-page's DOM content as argument
-        let imagenes = document.getElementsByClassName("post_file_filename");
-        let post = document.getElementsByClassName("post_data");
+        let imagenes = document.getElementsByClassName("fileText");
+        let post = document.getElementsByClassName("subject");
+        let number = document.getElementsByClassName("postNum")
+        number = number[0].firstElementChild.nextElementSibling.innerText;
         var response = {};
         post = post[0];
-        post = post.querySelector(".post_title");
         post = post.innerText.trim();
-        if (post.length > 0) {
-        	response["name"] = post;
+        if (post) {
+        	response["name"] = post+"_"+number;
         } else {
-        	response["name"] = false;
+        	response["name"] = number;
         }
         let images = []
         for(let i=0; i<imagenes.length; i++) {
-        	images.push(imagenes[i].href + " " + imagenes[i].title);
+        	images.push(imagenes[i].firstElementChild.href + " . " + imagenes[i].firstElementChild.innerText);
         }
         response["images"] = images;
         sendResponse(response);

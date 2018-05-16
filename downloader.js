@@ -90,7 +90,7 @@ function handleChanged(delta) {
 				resumeDownloads(toResume);
 			} else {
 				if (toResume.length > 0) {
-					alert("Some downloads could not be completed");
+					console.log("Some downloads could not be completed");
 				} else {
 					console.log("Downloads ended");
 				}

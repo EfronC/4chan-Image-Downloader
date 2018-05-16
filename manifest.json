@@ -25,6 +25,14 @@
         "http://thebarchive.com/*/thread/*",
         "https://thebarchive.com/*/thread/*"],
       "js": ["init.js"]
+    },
+    {
+      "matches": [
+        "http://4archive.org/board/*/thread/*",
+        "https://4archive.org/board/*/thread/*",
+        "http://yuki.la/*",
+        "https://yuki.la/*"],
+      "js": ["chan.js"]
     }
   ],
   "background": {

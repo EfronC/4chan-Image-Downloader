@@ -14,10 +14,13 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         // the web-page's DOM content as argument
         let imagenes = document.getElementsByClassName("post_file_filename");
         let post = document.getElementsByClassName("post_data");
+        var url = document.URL.split("/");
+        url = url[5];
         var response = {};
         post = post[0];
         post = post.querySelector(".post_title");
         post = post.innerText.trim();
+        post = post+"_"+url;
         if (post.length > 0) {
         	response["name"] = post;
         } else {
