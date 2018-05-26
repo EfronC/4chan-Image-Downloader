@@ -23,7 +23,9 @@
         "http://archive.nyafuu.org/*/thread/*",
         "https://archive.nyafuu.org/*/thread/*",
         "http://thebarchive.com/*/thread/*",
-        "https://thebarchive.com/*/thread/*"],
+        "https://thebarchive.com/*/thread/*",
+        "http://archiveofsins.com/*/thread/*",
+        "https://archiveofsins.com/*/thread/*"],
       "js": ["init.js"]
     },
     {

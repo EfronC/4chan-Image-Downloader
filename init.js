@@ -14,17 +14,20 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         // the web-page's DOM content as argument
         let imagenes = document.getElementsByClassName("post_file_filename");
         let post = document.getElementsByClassName("post_data");
-        var url = document.URL.split("/");
-        url = url[5];
         var response = {};
         post = post[0];
+        let number = document.URL.split("/");
+        number = name[name.indexOf("thread") + 1];
         post = post.querySelector(".post_title");
-        post = post.innerText.trim();
-        post = post+"_"+url;
-        if (post.length > 0) {
-        	response["name"] = post;
+        if (post) {
+            post = post.innerText.trim();
+            if (post.length > 0) {
+                response["name"] = post+"_"+number;
+            } else {
+                response["name"] = number;
+            }
         } else {
-        	response["name"] = false;
+            response["name"] = number;
         }
         let images = []
         for(let i=0; i<imagenes.length; i++) {

@@ -53,6 +53,7 @@ function downloadImages(response) {
 			// Download image
 			var downloadUrl = images[i].split(" . ")[0];
 			img = images[i].split(" . ")[1];
+			console.log(name+"/"+img);
 			var downloading = chrome.downloads.download({
 				url: downloadUrl,
 				filename: name+"/"+img,
