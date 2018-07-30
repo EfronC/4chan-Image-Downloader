@@ -29,10 +29,56 @@ function sleep(milliseconds) {
   }
 }
 
-//var urlRegex = /^https?:\/\/((?:[^./?#]+\.)?fireden\.net|desuarchive\.org|archived\.moe|nyafuu\.org)\/\w{1,3}\/thread\/\w*/;
+var urlRegex = /^https?:\/\/((?:[^./?#]+\.)?fireden\.net|desuarchive\.org|archived\.moe|nyafuu\.org|thebarchive\.com|archiveofsins\.com|4archive\.org|yuki\.la)\/\w{1,3}\/thread\/\w*/;
+var urlRegexD = /^https?:\/\/((?:[^./?#]+\.)?fireden\.net|desuarchive\.org|archived\.moe|nyafuu\.org|thebarchive\.com|archiveofsins\.com|4archive\.org|yuki\.la)\//;
 var pest;
 var tries = 0;
 var toResume = [];
+var currentDownload = false;
+
+function downloadSequentially(urls,name, callback) {
+  let index = 0;
+  let currentId;
+
+  chrome.downloads.onChanged.addListener(onChanged);
+
+  next();
+
+  function next() {
+    if (index >= urls.length) {
+      chrome.downloads.onChanged.removeListener(onChanged);
+      chrome.notifications.create({
+        "type": "basic",
+        "iconUrl": chrome.extension.getURL("images/icon48.png"),
+        "title": "End",
+        "message": "Ended downloads"  
+      });
+      callback();
+      return;
+    }
+    const url = urls[index];
+    index++;
+    if (url) {
+    	var downloadUrl = url.split(" . ")[0];
+		var img = url.split(" . ")[1];
+		console.log(name+"/"+img);
+      chrome.downloads.download({
+        url: downloadUrl,
+		filename: name+"/"+img,
+		conflictAction: 'uniquify',
+      }, id => {
+        currentId = id;
+      });
+    }
+  }
+
+  function onChanged({id, state}) {
+    if (id === currentId && state && state.current !== 'in_progress') {
+    	console.log(state.current);
+      next();
+    }
+  }
+}
 
 /**
  * downloadImages(confirmed) will perform the download of the entire thread.
@@ -41,6 +87,7 @@ var toResume = [];
  */
 function downloadImages(response) {
 	var confirmed=false;
+	cont = 0;
 	if (response["name"]) {
 		var name = response["name"];
 	} else {
@@ -48,59 +95,8 @@ function downloadImages(response) {
   		name = name[name.indexOf("thread") + 1]
 	}
 	let images = response["images"];
-	if(confirmed || confirmDownload(images.length)) {
-		for(let i=0; i<images.length; i++) {
-			// Download image
-			var downloadUrl = images[i].split(" . ")[0];
-			img = images[i].split(" . ")[1];
-			console.log(name+"/"+img);
-			var downloading = chrome.downloads.download({
-				url: downloadUrl,
-				filename: name+"/"+img,
-				conflictAction: 'uniquify'
-			});
-			//images[i].click();
-
-		}
-	}
+	downloadSequentially(images, name, () => console.log('done'));
 }
-
-function resumeDownloads(data) {
-	toResume = [];
-	for(let j=0; j<data.length;j++) {
-		chrome.downloads.resume(data[j]);
-	}
-}
-
-function handleChanged(delta) {
-	if (delta.state && delta.state.current === "complete") {
-    	console.log(`Download ${delta.id} has completed.`);
-  	}
-
-  	if (delta.error) {
-  		console.log(`Download ${delta.id} had an error.`);
-  		console.log(delta);
-  		toResume.push(delta.id);
-  	}
-
-  	chrome.downloads.search({state: "in_progress"}, function(data){
-		if (data.length == 0) {
-			if (toResume.length > 0 && tries < 5) {
-				sleep(5000);
-				tries++;
-				resumeDownloads(toResume);
-			} else {
-				if (toResume.length > 0) {
-					console.log("Some downloads could not be completed");
-				} else {
-					console.log("Downloads ended");
-				}
-			}
-		}
-	});
-}
-
-chrome.downloads.onChanged.addListener(handleChanged)
 
 chrome.browserAction.onClicked.addListener(function(tab) { 
 	// ...check the URL of the active tab against our pattern and...

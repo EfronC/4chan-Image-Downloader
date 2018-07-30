@@ -42,6 +42,7 @@
   },
   "permissions": [
     "downloads",
-    "activeTab"
+    "activeTab",
+    "notifications"
   ]
 }
