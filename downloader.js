@@ -33,6 +33,7 @@ var urlRegex = /^https?:\/\/((?:[^./?#]+\.)?fireden\.net|desuarchive\.org|archiv
 var urlRegexD = /^https?:\/\/((?:[^./?#]+\.)?fireden\.net|desuarchive\.org|archived\.moe|nyafuu\.org|thebarchive\.com|archiveofsins\.com|4archive\.org|yuki\.la)\//;
 var pest;
 var tries = 0;
+var failed = 0;
 var toResume = [];
 var currentDownload = false;
 
@@ -51,7 +52,7 @@ function downloadSequentially(urls,name, callback) {
         "type": "basic",
         "iconUrl": chrome.extension.getURL("images/icon48.png"),
         "title": "End",
-        "message": "Ended downloads"  
+        "message": "Ended downloads\nTotal of images: " + urls.length +"\nDownloads failed: " + failed  
       });
       callback();
       return;
@@ -72,10 +73,23 @@ function downloadSequentially(urls,name, callback) {
     }
   }
 
-  function onChanged({id, state}) {
-    if (id === currentId && state && state.current !== 'in_progress') {
+  function onChanged({id, state, error}) {
+    if (id === currentId && state && state.current !== 'in_progress' && !error) {
+      tries = 0;
     	console.log(state.current);
       next();
+    } else {
+      if (id == currentId && error) {
+        if(tries < 20) {
+          tries = tries + 1;
+          chrome.downloads.resume(id);
+        } else {
+          tries = 0;
+          failed = failed + 1;
+          chrome.downloads.cancel(id);
+          next();
+        }
+      }
     }
   }
 }
