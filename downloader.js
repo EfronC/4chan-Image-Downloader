@@ -62,7 +62,7 @@ function downloadSequentially(urls,name, callback) {
     if (url) {
     	var downloadUrl = url.split(" . ")[0];
 		var img = url.split(" . ")[1];
-    		img = img.replace(/[\/:*?"<>|!]/g, "");
+    		img = img.replace(/[\/:*?"~<>|!]/g, "");
 		console.log(name+"/"+img);
       chrome.downloads.download({
         url: downloadUrl,
