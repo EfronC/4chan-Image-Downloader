@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         var response = {};
         post = post[0];
         let number = document.URL.split("/");
-        number = name[name.indexOf("thread") + 1];
+        number = number[number.indexOf("thread") + 1];
         post = post.querySelector(".post_title");
         if (post) {
             post = post.innerText.trim();
