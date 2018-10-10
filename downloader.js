@@ -42,7 +42,7 @@ function downloadSequentially(urls,name, callback) {
   let currentId;
 
   chrome.downloads.onChanged.addListener(onChanged);
-  chrome.notifications.create({
+  chrome.notifications.create("start", {
     "type": "basic",
     "iconUrl": chrome.extension.getURL("images/icon48.png"),
     "title": "Start",
@@ -54,7 +54,7 @@ function downloadSequentially(urls,name, callback) {
   function next() {
     if (index >= urls.length) {
       chrome.downloads.onChanged.removeListener(onChanged);
-      chrome.notifications.create({
+      chrome.notifications.create("end", {
         "type": "basic",
         "iconUrl": chrome.extension.getURL("images/icon48.png"),
         "title": "End",
@@ -70,6 +70,10 @@ function downloadSequentially(urls,name, callback) {
       var img = url.split(" . ")[1];
       img = img.replace(/[\/:*?"~<>|!]/g, "");
       name = name.replace(/[\/:*?"~<>|!]/g, "_");
+      imgName = img.split(".")[0];
+      if (!imgName.trim()) {
+        img = index.toString() + img.trim();
+      }
       console.log(name+"/"+img);
       chrome.downloads.download({
         url: downloadUrl,
